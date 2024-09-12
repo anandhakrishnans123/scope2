@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import io
-create_button("goback", "https://wastefull.streamlit.app/")
+
 # Function to process the Excel file
 def process_excel(file):
     # Load the Excel file
