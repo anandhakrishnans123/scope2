@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 import io
-
+def create_button(button_name, link):
+    if st.button(button_name):
+        st.markdown(f'<meta http-equiv="refresh" content="0; url={link}" />', unsafe_allow_html=True)
+create_button("Go back to home page","https://frontend1.streamlit.app/")
 # Function to process the Excel file
 def process_excel(file):
     # Load the Excel file
