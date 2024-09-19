@@ -49,8 +49,11 @@ def process_excel(file, column_mapping):
     final_data['Energy Type'] = "India"
     final_data['Gas'] = "CO2"
     final_data['Activity'] = 0
-    final_data['Res_Date'] = pd.to_datetime(final_data['Res_Date']).dt.date
     
+    # Handle 'Res_Date' column with robust date parsing
+    if 'Res_Date' in final_data.columns:
+        final_data['Res_Date'] = pd.to_datetime(final_data['Res_Date'], errors='coerce').dt.date
+
     # Split data into different DataFrames based on 'Facility'
     final_data_SSL = final_data[final_data['Facility'] == 'Shreyas Shipping and Logistics Limited']
     final_data_FZE = final_data[final_data['Facility'] == 'TW Logistics FZE']
