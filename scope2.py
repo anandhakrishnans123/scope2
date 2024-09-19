@@ -5,8 +5,6 @@ import streamlit as st
 
 import streamlit as st
 
-# Streamlit UI
-st.title('Excel Data Processing App')
 
 
 def process_excel(file):
