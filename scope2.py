@@ -5,21 +5,8 @@ import streamlit as st
 
 import streamlit as st
 
-# Function to create a button with JavaScript redirection
-def create_redirect_button(button_name, link):
-    # Display a button
-    if st.button(button_name):
-        # Use JavaScript to redirect
-        st.markdown(
-            f'<script>window.location.href="{link}";</script>',
-            unsafe_allow_html=True
-        )
-
 # Streamlit UI
 st.title('Excel Data Processing App')
-
-# Create a button that will redirect to the specified link
-create_redirect_button("Go back to home page", "https://frontend1.streamlit.app/")
 
 
 def process_excel(file):
