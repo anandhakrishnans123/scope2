@@ -1,13 +1,8 @@
 import streamlit as st
 import pandas as pd
 import io
-import streamlit as st
 
-import streamlit as st
-
-
-
-def process_excel(file):
+def process_excel(file, column_mapping):
     # Load the Excel file
     excel_data = pd.ExcelFile(file)
     
@@ -26,14 +21,6 @@ def process_excel(file):
     # Define the path for the template workbook
     template_workbook_path = r'Electricity-Sample.xlsx'
     
-    # Define column mapping
-    column_mapping = {
-        'Country': 'Country',
-        'Facility': 'Office/Factory/Site/\nLocation(Optional)',
-        'Energy Consumption': 'Units Consumed (in kWh)',
-        'Res_Date': 'Start Date (DD/MM/YYYY Format)'
-    }
-    
     # Load the template workbook and get the specified sheet
     template_df = pd.read_excel(template_workbook_path, sheet_name=None)
     template_sheet_name = 'Electricity'
@@ -41,7 +28,7 @@ def process_excel(file):
     
     # Preserve the first row (header) of the template
     preserved_header = template_data.iloc[:0, :]
-    
+
     # Create a DataFrame with the template columns
     matched_data = pd.DataFrame(columns=template_data.columns)
     
@@ -54,6 +41,8 @@ def process_excel(file):
     
     # Combine header and matched data
     final_data = pd.concat([preserved_header, matched_data], ignore_index=True)
+    
+    # Add additional columns
     final_data['CF Standard'] = "IMO"
     final_data['Energy Unit'] = "kWh"
     final_data['Activity Unit'] = "kWh"
@@ -93,8 +82,27 @@ st.title('Excel Data Processing App')
 uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
 
 if uploaded_file:
-    buffer_SSL, buffer_FZE, buffer_DWC = process_excel(uploaded_file)
+    # Load the client Excel data
+    excel_data = pd.ExcelFile(uploaded_file)
+    first_sheet_df = pd.read_excel(uploaded_file, sheet_name=excel_data.sheet_names[0])
+
+    # Define the template column names
+    template_columns = ['Country', 'Facility', 'Energy Consumption', 'Res_Date']
     
+    # Create an empty dictionary to store column mappings
+    column_mapping = {}
+    
+    st.write("Select client columns to map to template columns:")
+    
+    # For each template column, create a selectbox to allow the user to map the appropriate client column
+    for template_col in template_columns:
+        client_col = st.selectbox(f"Select client column for template column '{template_col}'", first_sheet_df.columns)
+        column_mapping[template_col] = client_col
+    
+    # Process the Excel file with the selected column mappings
+    buffer_SSL, buffer_FZE, buffer_DWC = process_excel(uploaded_file, column_mapping)
+    
+    # Download buttons for each processed file
     st.download_button(
         label="Download SSL Data",
         data=buffer_SSL,
